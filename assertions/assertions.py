@@ -37,7 +37,7 @@ def equals(
         print("Test passed")
     
     elif a != b:
-        raise AssertionError(message_on_fail + f": expected {a} to equal {b}")
+        raise AssertionError(f"{message_on_fail}: expected {a} to equal {b}")
 
 def not_equals(
     a: Any,
@@ -58,7 +58,7 @@ def not_equals(
         print("Test passed")
     
     elif a == b:
-        raise AssertionError(message_on_fail + f": expected {a} to not equal {b}")
+        raise AssertionError(f"{message_on_fail}: expected {a} to not equal {b}")
 
 def expect(
     value: Any,
@@ -84,8 +84,8 @@ def expect(
 def raises(
     function: Callable[..., Any],
     exceptions: Tuple[Type[BaseException], ...] | Type[BaseException] = (Exception,),
-    message_on_fail = "Test failed",
-    verbose = False,
+    message_on_fail: str = "Test failed",
+    verbose: bool = False,
 ) -> None:
     """
     Assertion of a function raising an exception.
@@ -100,11 +100,13 @@ def raises(
         exceptions = (exceptions,)
     
     def handle():
+        expected_exceptions = list(map(lambda e: e.__name__, exceptions))
+
         raise AssertionError(
             message_on_fail
             + ": expected given function to raise "
             + ("" if len(exceptions) == 1 else "any of the following: ")
-            + ", ".join(map(lambda e: e.__name__, exceptions))
+            + ", ".join(expected_exceptions)
         )
     
     try:
@@ -113,8 +115,6 @@ def raises(
     except exceptions:
         if verbose:
             print("Test passed")
-        
-        return None
 
     except:
         # handle cases when the exception is not of the expected type
@@ -144,11 +144,13 @@ def does_not_raise(
         exceptions = (exceptions,)
     
     def handle():
+        avoided_exceptions = list(map(lambda e: e.__name__, exceptions))
+
         raise AssertionError(
             message_on_fail
             + ": expected given function to not raise "
             + ("" if len(exceptions) == 1 else "any of the following: ")
-            + ", ".join(map(lambda e: e.__name__, exceptions))
+            + ", ".join(avoided_exceptions)
         )
     
     try:
@@ -158,7 +160,7 @@ def does_not_raise(
         handle()
 
     except:
-        # handle cases when the exception is not of the expected type
+        # handle other types of exceptions
         if verbose:
             print("Test passed")
 
@@ -187,7 +189,7 @@ def approximately_equals(
         print("Test passed")
 
     elif abs(a-b) > margin:
-        raise AssertionError(message_on_fail + f": expected {a} to be within {margin} of {b}")
+        raise AssertionError(f"{message_on_fail}: expected {a} to be within {margin} of {b}")
 
 def not_approximately_equals(
     a: int | float,
@@ -210,7 +212,7 @@ def not_approximately_equals(
         print("Test passed")
 
     elif abs(a-b) <= margin:
-        raise AssertionError(message_on_fail + f": expected {a} to not be within {margin} of {b}")
+        raise AssertionError(f"{message_on_fail}: expected {a} to not be within {margin} of {b}")
 
 def contains(
     it: Iterable[Any],
@@ -231,7 +233,7 @@ def contains(
         print("Test passed")
 
     elif value not in it:
-        raise AssertionError(message_on_fail + f": expected {value} to be in {it}")
+        raise AssertionError(f"{message_on_fail}: expected {value} to be in {it}")
 
 def does_not_contain(
     it: Iterable[Any],
@@ -252,7 +254,7 @@ def does_not_contain(
         print("Test passed")
 
     elif value in it:
-        raise AssertionError(message_on_fail + f": expected {value} to not be in {it}")
+        raise AssertionError(f"{message_on_fail}: expected {value} to not be in {it}")
 
 def is_instance(
     value: Any,
@@ -275,7 +277,7 @@ def is_instance(
         print("Test passed")
 
     elif not isinstance(value, types):
-        raise AssertionError(message_on_fail + f": expected {value} to be an instance of {types}")
+        raise AssertionError(f"{message_on_fail}: expected {value} to be an instance of {types}")
 
 def not_is_instance(
     value: Any,
@@ -298,7 +300,7 @@ def not_is_instance(
         print("Test passed")
 
     elif isinstance(value, types):
-        raise AssertionError(message_on_fail + f": expected {value} to not be an instance of {types}")
+        raise AssertionError(f"{message_on_fail}: expected {value} to not be an instance of {types}")
 
 def greater(
     value: int | float,
@@ -319,7 +321,7 @@ def greater(
         print("Test passed")
 
     elif value <= comparison:
-        raise AssertionError(message_on_fail + f": expected {value} to be greater than {comparison}")
+        raise AssertionError(f"{message_on_fail}: expected {value} to be greater than {comparison}")
 
 def less(
     value: int | float,
@@ -340,4 +342,4 @@ def less(
         print("Test passed")
 
     elif value >= comparison:
-        raise AssertionError(message_on_fail + f": expected {value} to be less than {comparison}")
+        raise AssertionError(f"{message_on_fail}: expected {value} to be less than {comparison}")
